@@ -18,10 +18,12 @@ public class Aoc2021Day14 {
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String template = br.readLine();
+            // save the first character of the polymere so we can add 1 to the lettercount as this one is not counted twice
+            Character firstChar = template.charAt(0);
+
             Map<String, Long> polymer = new HashMap<>();
-            for (int i = 0; i < template.length() - 2; i++) {
-                polymer.put(template.substring(i, i + 2), 1L);
-                polymer.put(template.substring(i + 1, i + 3), 1L);
+            for (int i = 0; i < template.length() - 1; i++) {
+                polymer.put(template.substring(i, i + 2), polymer.containsKey(template.substring(i, i + 2)) ? polymer.get(template.substring(i, i + 2)) + 1L : 1L);
             }
             // skip empty line
             br.readLine();
@@ -38,6 +40,7 @@ public class Aoc2021Day14 {
                         Long amount = polymer.get(currentPolymer);
                         String firstNewPair = currentPolymer.charAt(0) + pairInsertionRules.get(currentPolymer);
                         String secondNewPair = pairInsertionRules.get(currentPolymer) + currentPolymer.charAt(1);
+                        lastPolymereAdded = secondNewPair;
 
                         newPolymer.put(firstNewPair, newPolymer.containsKey(firstNewPair) ? newPolymer.get(firstNewPair) + amount : amount);
                         newPolymer.put(secondNewPair, newPolymer.containsKey(secondNewPair) ? newPolymer.get(secondNewPair) + amount : amount);
@@ -54,13 +57,14 @@ public class Aoc2021Day14 {
 
                 letterCount.put(poly.charAt(0), letterCount.containsKey(poly.charAt(0)) ? letterCount.get(poly.charAt(0)) + amount : amount);
                 letterCount.put(poly.charAt(1), letterCount.containsKey(poly.charAt(1)) ? letterCount.get(poly.charAt(1)) + amount : amount);
-
             }
+            letterCount.put(firstChar, letterCount.get(firstChar) + 1);
+            letterCount.put(lastPolymereAdded.charAt(1), letterCount.get(lastPolymereAdded.charAt(1)) + 1);
 
             Long min = Collections.min(letterCount.values());
             Long max = Collections.max(letterCount.values());
             // divide by 2 for counting letters twice
-            System.out.println((max - min) / 2 + 1);
+            System.out.println((max - min) / 2);
         } catch (IOException e) {
             e.printStackTrace();
         }
