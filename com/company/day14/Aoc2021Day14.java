@@ -13,13 +13,13 @@ public class Aoc2021Day14 {
         File file = new File("input.txt");
         String line;
         Map<String, String> pairInsertionRules = new HashMap<>();
-        String lastPolymereAdded = "";
         final int STEPS = 40;
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String template = br.readLine();
             // save the first character of the polymer, we can add 1 to the lettercount as this one is not counted twice
             Character firstChar = template.charAt(0);
+            Character lastChar = template.charAt(template.length() - 1);
 
             Map<String, Long> polymer = new HashMap<>();
             for (int i = 0; i < template.length() - 1; i++) {
@@ -48,7 +48,6 @@ public class Aoc2021Day14 {
                         String firstNewPair = currentPolymer.charAt(0) + pairInsertionRules.get(currentPolymer);
                         String secondNewPair = pairInsertionRules.get(currentPolymer) + currentPolymer.charAt(1);
                         // save the last added polymer, so that we can use the last letter to add 1 in the lettercount as this is not counted twice
-                        lastPolymereAdded = secondNewPair;
 
                         // add the new pairs to the new polymer
                         newPolymer.put(firstNewPair, newPolymer.containsKey(firstNewPair) ? newPolymer.get(firstNewPair) + amount : amount);
@@ -74,7 +73,7 @@ public class Aoc2021Day14 {
             // first letter is not counted twice, add 1 here so the result can be divided by 2
             letterCount.put(firstChar, letterCount.get(firstChar) + 1);
             // last letter is not counted twice, add 1 here so the result can be divided by 2
-            letterCount.put(lastPolymereAdded.charAt(1), letterCount.get(lastPolymereAdded.charAt(1)) + 1);
+            letterCount.put(lastChar, letterCount.get(lastChar) + 1);
 
             Long min = Collections.min(letterCount.values());
             Long max = Collections.max(letterCount.values());
