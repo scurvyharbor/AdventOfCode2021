@@ -18,7 +18,7 @@ public class Aoc2021Day14 {
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String template = br.readLine();
-            // save the first character of the polymere so we can add 1 to the lettercount as this one is not counted twice
+            // save the first character of the polymer, we can add 1 to the lettercount as this one is not counted twice
             Character firstChar = template.charAt(0);
 
             Map<String, Long> polymer = new HashMap<>();
@@ -37,11 +37,15 @@ public class Aoc2021Day14 {
                 Map<String, Long> newPolymer = new HashMap<>();
                 for (String currentPolymer : polymer.keySet()) {
                     if (pairInsertionRules.containsKey(currentPolymer)) {
+                        // amount of the current polymer that is going to be duplicated
                         Long amount = polymer.get(currentPolymer);
+
                         String firstNewPair = currentPolymer.charAt(0) + pairInsertionRules.get(currentPolymer);
                         String secondNewPair = pairInsertionRules.get(currentPolymer) + currentPolymer.charAt(1);
+                        // save the last added polymer, so that we can use the last letter to add 1 in the lettercount as this is not counted twice
                         lastPolymereAdded = secondNewPair;
 
+                        // add the new pairs to the new polymer
                         newPolymer.put(firstNewPair, newPolymer.containsKey(firstNewPair) ? newPolymer.get(firstNewPair) + amount : amount);
                         newPolymer.put(secondNewPair, newPolymer.containsKey(secondNewPair) ? newPolymer.get(secondNewPair) + amount : amount);
                     } else {
@@ -50,6 +54,7 @@ public class Aoc2021Day14 {
                 }
                 polymer = newPolymer;
             }
+
             Map<Character, Long> letterCount = new HashMap<>();
             for (Map.Entry<String, Long> element : polymer.entrySet()) {
                 String poly = element.getKey();
